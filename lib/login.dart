@@ -1,8 +1,8 @@
 
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:loginuicolors/home.dart';
+import 'package:loginuicolors/splash_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyLogin extends StatefulWidget {
   const MyLogin({Key? key}) : super(key: key);
@@ -12,41 +12,11 @@ class MyLogin extends StatefulWidget {
 }
 
 class _MyLoginState extends State<MyLogin> {
-  bool isChecked = false;
+
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
 
 
-  late Box box1;
-
-  @override
-  void initState() {
-    //
-    super.initState();
-    createBox();
-
-  }
-
-  void createBox() async {
-    box1 = await Hive.openBox('logininfo');
-    getdata();
-  }
-  void getdata()async {
-    if (box1.get('email') != null) {
-      email.text = box1.get('email');
-      isChecked = true;
-      setState(() {
-
-      });
-    }
-    if (box1.get('password') != null) {
-      password.text = box1.get('password');
-      isChecked = true;
-      setState(() {
-
-      });
-    }
-  }
 
 
   @override
@@ -112,22 +82,6 @@ class _MyLoginState extends State<MyLogin> {
                             height: 40,
                           ),
                           Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text("Remember Me",
-                                style: TextStyle(color: Colors.black),),
-                              Checkbox(
-                                value: isChecked,
-                                onChanged: (value) {
-                                  isChecked = !isChecked;
-                                  setState(() {
-
-                                  });
-                                },
-                              ),
-                            ],
-                          ),
-                          Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
@@ -140,11 +94,14 @@ class _MyLoginState extends State<MyLogin> {
                                 backgroundColor: Color(0xff4c505b),
                                 child: IconButton(
                                     color: Colors.white,
-                                    onPressed: () {
+                                    onPressed: () async {
+                                      //if sucessfull login or hit submit button
+                                      var sharedpref = await SharedPreferences.getInstance();
+                                      sharedpref.setBool(Splash_screenState.KEYLOGIN, true);
+
                                       Navigator.push(context, MaterialPageRoute(builder: (BuildContext context){
                                         return home();
                                       },),);
-                                      login();
                                     },
                                     icon: Icon(
                                       Icons.arrow_forward,
@@ -175,7 +132,11 @@ class _MyLoginState extends State<MyLogin> {
                                 style: ButtonStyle(),
                               ),
                               TextButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context){
+                                      return Splash_screen();
+                                    },),);
+                                  },
                                   child: Text(
                                     'Forgot Password',
                                     style: TextStyle(
@@ -199,10 +160,6 @@ class _MyLoginState extends State<MyLogin> {
     );
   }
 
-  void login() {
-    if (isChecked) {
-      box1.put('email', email.text);
-      box1.put('password', password.text);
-    }
+
   }
-}
+

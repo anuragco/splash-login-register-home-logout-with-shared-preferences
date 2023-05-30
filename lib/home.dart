@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loginuicolors/login.dart';
 
 void main() {
   runApp(home());
@@ -42,6 +43,7 @@ class _DropdownDatePickerExampleState extends State<DropdownDatePickerExample> {
   String dropdownValue1 = 'Select State';
   DateTime? selectedDate;
   String dropdownValue3 = '';
+  String? selectedValue;
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
@@ -57,6 +59,7 @@ class _DropdownDatePickerExampleState extends State<DropdownDatePickerExample> {
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -65,31 +68,25 @@ class _DropdownDatePickerExampleState extends State<DropdownDatePickerExample> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           Container(
-            width: 110,
-            child: DropdownButton<String>(
-              value: dropdownValue1,
-              onChanged: (String? newValue) {
-                setState(() {
-                  dropdownValue1 = newValue!;
-                  if (dropdownValue1 == 'Mumbai') {
-                    dropdownValue3 = 'Select Temperature';
-                  } else {
-                    dropdownValue3 = '';
-                  }
-                });
-              },
-              items: <String>[
-                'Select State',
-                'Delhi',
-               'Mumbai',
-              ].map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-            ),
-          ),
+              width: 110,
+              child: DropdownButton<String?>(
+                hint: Text('State'),
+                value: selectedValue,
+                onChanged: (value) {
+                  setState(() {
+                    selectedValue = value;
+                  });
+                  print("value");
+                },
+                items: ["A", "B", "C"]
+                    .map(
+                      (e) => DropdownMenuItem(
+                        child: Text(e),
+                        value: e,
+                      ),
+                    )
+                    .toList(),
+              )),
           SizedBox(height: 16),
           if (selectedDate != null)
             Text(
@@ -105,6 +102,7 @@ class _DropdownDatePickerExampleState extends State<DropdownDatePickerExample> {
             Container(
               width: 170,
               child: DropdownButton<String>(
+                hint: Text("temperature"),
                 value: dropdownValue3,
                 onChanged: (String? newValue) {
                   setState(() {
@@ -135,13 +133,33 @@ class _DropdownDatePickerExampleState extends State<DropdownDatePickerExample> {
                 print('Selected values:');
                 print('Dropdown 1: $dropdownValue1');
                 if (selectedDate != null) {
-                  print('Selected date: ${selectedDate!.toIso8601String().split('T')[0]}');
+                  print(
+                      'Selected date: ${selectedDate!.toIso8601String().split('T')[0]}');
                 }
                 print('Dropdown 3: $dropdownValue3');
               },
               child: Text('Submit'),
             ),
           ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context){
+                      return MyLogin();
+                    },),);
+                  },
+                  child: Text(
+                    'Logout',
+                    style: TextStyle(
+                      decoration: TextDecoration.underline,
+                      color: Color(0xff4c505b),
+                      fontSize: 30,
+                    ),
+                  )),
+            ],
+          )
         ],
       ),
     );
