@@ -134,7 +134,7 @@ class _MyLoginState extends State<MyLogin> {
                               TextButton(
                                   onPressed: () {
                                     Navigator.push(context, MaterialPageRoute(builder: (BuildContext context){
-                                      return Splash_screen();
+                                      return MyLogin();
                                     },),);
                                   },
                                   child: Text(

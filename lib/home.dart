@@ -146,9 +146,10 @@ class _DropdownDatePickerExampleState extends State<DropdownDatePickerExample> {
             children: [
               TextButton(
                   onPressed: () {
-                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context){
-                      return MyLogin();
-                    },),);
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                            builder: (context) => MyLogin()),
+                            (route) => false);
                   },
                   child: Text(
                     'Logout',
